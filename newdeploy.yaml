@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zapp
+spec:
+  replicas: 1 # set to 1 for single instance
+  strategy:
+    type: Recreate # use Recreate strategy for single instance
+  selector:
+    matchLabels:
+      app: zapp
+  template:
+    metadata:
+      labels:
+        app: zapp
+    spec:
+      containers:
+      - name: zapp
+        image: mysql:5.7 # want sql image  
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword" # set root password for mysql
+        - name: MYSQL_DATABASE
+          value: "mydatabase" # create a database named mydatabase
+        - name: MYSQL_USER
+          value: "myuser" # create a user named myuser
+        - name: MYSQL_PASSWORD
+          value: "mypassword" # set password for myuser
+        # resources section to limit memory and CPU usage
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1Gi"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mypvc # mount path for web content
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zapp-service
+spec:
+  type: LoadBalancer # use LoadBalancer type for external access
+  selector:
+    app: zapp
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP # specify protocol for the service
+    name: http # name the port for clarity
+
+
+---

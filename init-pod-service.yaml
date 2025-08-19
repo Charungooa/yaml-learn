@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-pod-lb
+  namespace: initnamespace
+spec:
+  selector:
+    app: my-app-pod
+  type: LoadBalancer
+  # type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+
+# loadbalancer service
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: my-app-pod-lb
+# spec:
+#   selector:
+#     app: my-app-pod
+#   type: LoadBalancer
+#   ports:
+#   - port: 80
+#     targetPort: 8080

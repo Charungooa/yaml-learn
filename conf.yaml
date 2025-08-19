@@ -1,0 +1,9 @@
+# configure configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp
+  namespace: default
+data:
+  profit: "1000"
+  location: "USA"

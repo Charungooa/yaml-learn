@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+  namespace: initnamespace
+  labels:
+    app: my-app-pod
+spec:
+  initContainers:
+  - name: create-index-file
+    # This init container creates an index.html file before the main container starts
+    image: busybox
+    command: 
+        - sh
+        - -c
+        - |
+          echo "Welcome to my app! Created by Init Container." > /usr/share/nginx/html/index.html
+    volumeMounts:
+      - name: html-volume
+        mountPath: /usr/share/nginx/html
+  containers:
+  - name: my-app-pod
+    image: nginx:1.24.0
+    volumeMounts:
+      - name: html-volume
+        mountPath: /usr/share/nginx/html
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+  volumes:
+    - name: html-volume
+      emptyDir: {}

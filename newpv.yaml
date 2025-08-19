@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nginxpv
+spec:
+  capacity:
+    storage: "20Gi"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: managed-premium
+  azureDisk:
+    kind: Managed
+    diskName: ngnx-disk
+    diskURI: /subscriptions/f4cb86cb-67d4-472d-ae51-beb5564e9c7d/resourcegroups/terra-rg-dev/providers/Microsoft.Compute/disks/nginxdisk
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginxpvc
+  namespace: nginxspace
+spec:
+  resources:
+    requests:
+      storage: "15Gi"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: managed-premium
+ 

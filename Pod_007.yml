@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: nginx:1.14.2:azureFile
+spec:
+  containers:
+  - name: myapp
+    image: nginx:1.14.2
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: File-storage
+        mountPath: /data
+  volumes:
+  -name: File-storage
+    storageClassName: azurefile
+    

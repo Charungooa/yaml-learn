@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mynginx
+  labels:
+    name: nginx-app
+spec:
+  #serviceAccountName: mysaid
+  # userNames:
+  userNames:
+  #   - name: myuser
+  # securityContext:
+  #   runAsUser: 1000
+  #   runAsGroup: 3000
+  #   fsGroup: 2000
+  - name: nginx-con
+    image: nginx:1.21.0
+    ports:
+      - containerPort: 80
+     envfrom:
+      - configMapRef:
+          name: myconfigmap    
+    # env:
+    # - name: MY_VAR
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: myconfigmap001
+    #       key: name
+    # - name: MY_LOCATION
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: myconfigmap
+    #       key: location
+    # # resources:
+    # #   limits:
+    # #     memory: "512Mi"
+    # #     cpu: "500m"
+    # #   requests:
+    # #     memory: "256Mi"
+    # #     cpu: "250m"
+
+...
+# apiVersion: v1
+kind: role

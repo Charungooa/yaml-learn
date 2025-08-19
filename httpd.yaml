@@ -1,0 +1,32 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  labels: 
+    app: myhttpd 
+  name: myhttpd 
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: myhttpd 
+  template: 
+    metadata: 
+      labels: 
+        app: myhttpd 
+    spec: 
+      containers: 
+      - image: httpd 
+        name: myhttpd 
+--- 
+
+apiVersion: v1 
+kind: Service 
+metadata: 
+  name: myhttpd-cip 
+spec: 
+  ports: 
+  - port: 8090 
+    protocol: TCP 
+    targetPort: 80 
+  selector: 
+    app: myhttpd

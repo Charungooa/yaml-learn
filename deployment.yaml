@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mypv
+spec:
+  capacity:
+    storage: <Size>
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  accessModes: 
+  - ReadWriteOnce
+  
+
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+name: mypod
+spec:
+containers:
+- name: mycontainer
+image: nginx
+status:
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "standard_ssd"
+  spec:
+  reclaimPolicy: Retain
+   
+
+---
+
+apiVersion: storage.k8s.io/v1 
+kind: StorageClass
+metadata: 
+ name: managed-standard-ssd 
+parameters: 
+ cachingmode: ReadOnly 
+ kind: Managed 
+storageaccounttype: StandardSSD_LRS 
+provisioner: kubernetes.io/azure-disk
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+ name: managed-standard-hdd
+parameters:
+   cachingmode: ReadOnly
+   kind: Managed
+storageaccounttype: StandardSSD_LRS
+provisioner: kubernetes.io/azure-disk

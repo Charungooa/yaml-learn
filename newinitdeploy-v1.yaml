@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: init-deploy09
+  annotations:
+    kubernetes.io/change-cause: "init-deploy0 with init container"
+  namespace: default
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: init-deploy09
+  template:
+    metadata:
+      labels:
+        app: init-deploy09
+    spec:
+      containers:
+      - name: init-deploy09
+        image: "nginx:1.24-alpine"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: html-volume
+          persistentVolumeClaim:
+            claimName: zapp-pvc
+      
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: init-deploy09-svc
+  namespace: default
+spec:
+  selector:
+    app: init-deploy09
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80

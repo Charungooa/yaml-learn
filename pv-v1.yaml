@@ -1,0 +1,77 @@
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: zapp-pv
+# spec:
+#   capacity:
+#     storage: 10Gi
+#   volumeMode: Filesystem
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: azurefile-premium
+#   azureFile:
+#     secretName: azure-secret # where would I create this secret? 
+#     secretNamespace: default
+#     shareName: terrafilesharedev
+#     readOnly: false
+#     kind: Managed
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zapp-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: azurefile-premium
+  azureFile:
+    secretName: azure-secret
+    secretNamespace: default
+    shareName: terrafilesharedev
+    readOnly: false
+    
+ 
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zapp-pvc 
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: azurefile-premium
+
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azurefile-premium
+provisioner: file.csi.azure.com
+parameters:
+  skuName: Premium_LRS
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azure-secret
+  namespace: default
+type: Opaque
+data:
+  azurestorageaccountname: dGVycmFzYWRldnN0b3JhZ2U=
+  azurestorageaccountkey: MXdNMzlVKzdXRFQ0NUtuWkFSREViYWJ2OFVEdHRmemFPbjlpT2VBVm9yWGljYjBiaFRhdkRWc24xUGt0UGFFRVFxTmRxUkp3UjhPcytBU3RnL3RwR3c9PQ==
+ # base64 for 'password123', replace with your actual base64-encoded password

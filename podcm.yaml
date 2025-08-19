@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    app.kubernetes.io/name: myapp
+spec:
+  containers:
+  - name: myapp
+    image: nginx:1.21.0
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    envFrom:
+      - configMapRef:
+          name: myapp
+# Uncomment the following lines to add environment variables from a ConfigMap
+    # env:
+    #   - name: MYAPP_ENV
+    #     valueFrom:
+    #       configMapKeyRef:
+    #         name: myapp
+    #         key: location
+    #   - name: MYAPP_ENV1
+    #     valueFrom:
+    #       configMapKeyRef:
+    #         name: myapp
+    #         key: group

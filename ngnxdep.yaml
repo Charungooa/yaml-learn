@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ngnxdep
+  namespace: nginxspace
+  labels:
+    app: ngnxdep
+  annotations: 
+    kubernetes.io/change-cause: "nginx:1.24.0"
+    description: "This deployment uses a persistent volume for web content"
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: ngnxdep
+  template:
+    metadata:
+      labels:
+        app: ngnxdep
+    spec:
+      containers:
+      - name: ngnxdep
+        image: nginx:1.24.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: mywebserver
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: mywebserver
+        persistentVolumeClaim: 
+          claimName: nginxpvc # mount path for web content
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ngnxdep
+  namespace: nginxspace
+spec:
+  selector:
+    app: ngnxdep
+  ports:
+  - port: 80
+    targetPort: 80
+  type: LoadBalancer

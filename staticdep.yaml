@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-node-1
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: app-node-1
+  template:
+    metadata:
+      labels:
+        app: app-node-1
+    spec:
+      containers:
+      - name: app-node-1
+        image: nginx:1.25.0
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: app-node-1-svc
+  namespace: default
+spec:
+  selector:
+    app: app-node-1
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: app-node-1
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+

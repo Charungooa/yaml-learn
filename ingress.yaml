@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1  
+kind: Ingress 
+metadata: 
+  name: my-ingress 
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: / 
+spec: 
+  ingressClassName: nginx 
+  defaultBackend: 
+    service: 
+      name: mynginx-cip 
+      port: 
+        number: 8090 
+  rules: 
+  - host: demo.mydomain.com 
+    http: 
+      paths: 
+      - path: /nginx 
+        pathType: Prefix 
+        backend: 
+          service: 
+            name: mynginx-cip 
+            port:  
+              number: 8090 
+      - path: /httpd 
+        pathType: Prefix 
+        backend: 
+          service: 
+            name: myhttpd-cip 
+            port:  
+              number: 8090 

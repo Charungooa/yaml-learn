@@ -1,0 +1,17 @@
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: myconfigmap
+#   namespace: default
+# data:
+#   name: "AMIT"
+#   location: "JAMMU"
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap001
+  namespace: mynginxspace02
+data:
+  name: "AMIT Charungoo"
+  location: "old janipur"
