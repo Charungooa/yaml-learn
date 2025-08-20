@@ -18,6 +18,6 @@ spec:
       - name: File-storage
         mountPath: /data
   volumes:
-  -name: File-storage
-    storageClassName: azurefile
+    - name: File-storage
+      storageClassName: azurefile
     
