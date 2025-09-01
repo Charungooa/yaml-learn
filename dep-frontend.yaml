@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: nginx:1.24.0
+        image: nginx:1.25.0
         resources:
           limits:
             memory: "64Mi"

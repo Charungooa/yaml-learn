@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/change-cause: "Deployment created for myapp with persistent volume"
     description: "This deployment uses a persistent volume for data storage"
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: myapp
@@ -17,11 +17,11 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: nginx:1.19.0
+        image: nginx:1.25.0
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "250m"
         ports:
         - containerPort: 80
 
@@ -36,5 +36,5 @@ spec:
   selector:
     app: myapp
   ports:
-  - port: 80
+  - port: 8080
     targetPort: 80
