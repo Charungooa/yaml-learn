@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-app
+data:
+  name: myconfig01
+  group: mygroup01
+  location: mylocation01
+  
+
+
+

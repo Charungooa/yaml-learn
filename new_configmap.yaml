@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: newconfigmap
+  namespace: newconfig
+data:
+  my_location: us-west
+  my_group: dev
+  my_name: myapp-config
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploration
+  namespace: newconfig
+  annotations:
+    kubernetes.io/change-cause: "Deployment created for Deploration with resource limits"
+    description: "This deployment uses resource limits for better performance"
+spec:
+  selector:
+    matchLabels:
+      app: deploration
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: deploration
+    spec:
+      containers:
+      - name: deploration
+        image: nginx:1.25.0
+        env:
+        - name: CONFIG_LOCATION
+          valueFrom:
+            configMapKeyRef:
+              key: my_location
+              name: newconfigmap
+        - name: CONFIG_GROUP
+          valueFrom:
+            configMapKeyRef:
+              key: my_group
+              name: newconfigmap
+        - name: CONFIG_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: my_name
+              name: newconfigmap
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+spec:
+  selector:
+    app: deploration
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+
