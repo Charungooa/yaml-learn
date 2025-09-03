@@ -18,6 +18,25 @@ spec:
       containers:
       - name: myapp
         image: nginx:1.25.0
+        env:
+        - name: Prodenv
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig-v3
+              key: Age
+        
+        - name: Testenv
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig-v3
+              key: Country
+        
+        - name: Devenv
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig-v3
+              key: Version
+
         resources:
           limits:
             memory: "128Mi"

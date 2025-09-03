@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-app
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
 data:
-  name: myconfig01
-  group: mygroup01
-  location: mylocation01
+  name: {{ .Values.ConfigMap.name }}
+  group: {{ .Values.ConfigMap.my_group  }}
+  location: {{ .Values.ConfigMap.my_location }}
+ 
   
 
 

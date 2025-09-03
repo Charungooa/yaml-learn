@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmdeploy
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cmdeploy
+  template:
+    metadata:
+      labels:
+        app: cmdeploy
+    spec:
+      containers:
+      - name: cmdeploy
+        image: nginx:1.25.0-alpine
+        env:
+        - name: CONFIG_NAME_V1
+          valueFrom:
+            configMapKeyRef:
+              name: myconfig-v3
+              key: name
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: myconfig-v1
+          mountPath: /etc/config
+        - name: myconfig-v2
+          mountPath: /mnt/myconfig-v2
+      volumes:
+      - name: myconfig-v1
+        configMap:
+          name: myconfig-v1
+      - name: myconfig-v2
+        configMap:
+          name: myconfig-v2
+      - name: myconfig-v3
+        configMap:
+          name: myconfig-v3
+

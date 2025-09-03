@@ -6,10 +6,14 @@
 myservice:
   name: frontend-service
   port: 8080
+ 
+ConfigMap:
+  name: myconfigmap
+  my_location: "USA"
+  my_group: "Admin"
+  my_name: "Amit"
 
-
-
-childchart:
+  childchart:
    childservice:
      name: fromparent-child-service
      port: ""
@@ -22,7 +26,7 @@ global:
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "1.19.0"
+    tag: "1.25.0"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []

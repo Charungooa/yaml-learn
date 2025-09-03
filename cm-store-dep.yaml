@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmstore-dep
+spec:
+  selector:
+    matchLabels:
+      app: cmstore-dep
+  template:
+    metadata:
+      labels:
+        app: cmstore-dep
+    spec:
+      containers:
+      - name: cmstore-dep
+        image: nginx:1.25.0-alpine
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: cmstore-config
+          mountPath: /etc/config
+      volumes:
+      - name: cmstore-config
+        configMap:
+          name: myconfig-v2
+      - name: cmstore-secret
+        secret:
+          secretName: gensecret
+
+        
+---

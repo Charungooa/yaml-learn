@@ -1,0 +1,2 @@
+ConfigMap:
+  name: myconfigmap-01
