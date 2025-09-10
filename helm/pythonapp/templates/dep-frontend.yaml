@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-app
+  annotations:
+    kubernetes.io/change-cause: {{ index .Values.annotations "kubernetes.io.change-cause" | quote }}
 spec:
   strategy:
     type: Recreate
@@ -44,6 +46,12 @@ spec:
             cpu: "250m"
         ports:
         - containerPort: 80
-
-
----
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: {{ .Release.Name }}-apollo-html
+         
+            

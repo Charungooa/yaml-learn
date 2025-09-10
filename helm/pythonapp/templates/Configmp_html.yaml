@@ -1,0 +1,13 @@
+{{- if .Values.frontendHTML.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-apollo-html
+  labels:
+    app: frontend-app
+    #chart: {{ .Chart.Name }}:{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+data:
+  index.html: |
+{{ .Values.frontendHTML.content | indent 4 }}
+{{- end }}
