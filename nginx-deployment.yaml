@@ -3,7 +3,9 @@ kind: Deployment
 metadata: 
   name: mynginx 
 spec: 
-  replicas: 1 
+  replicas: 3
+  strategy: 
+    type: Recreate 
   selector: 
     matchLabels: 
       app: mynginx 
@@ -13,55 +15,89 @@ spec:
         app: mynginx 
     spec: 
       containers: 
-      - image: nginx 
+      - image: nginx:1.27.4
         name: mynginx
-
---- 
-apiVersion: v1 
-kind: Service 
-metadata: 
-  name: mynginx-cip 
-spec: 
-  ports: 
-  - port: 8090 
-    protocol: TCP 
-    targetPort: 80 
-  selector: 
-    app: mynginx 
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
 
 
+# --- 
+# apiVersion: v1 
+# kind: Service 
+# metadata: 
+#   name: mynginx-cip 
+# spec: 
+#   ports: 
+#   - port: 8090 
+#     protocol: TCP 
+#     targetPort: 80 
+#   selector: 
+#     app: mynginx 
+
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: myapp
+# spec:
+#   type: "LoadBalancer"
+#   selector:
+#     app: myapp
+#   ports:
+#   - port: 80
+#     targetPort: 8080
+
+# ---
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: myingress
+#   labels:
+#     name: myingress
+# spec:
+#   rules:
+#   - host: <Host>
+#     http:
+#       paths:
+#       - pathType: Prefix
+#         path: "/"
+#         backend:
+#           service:
+#             name: <Service>
+#             port: 
+#               number: <Port>
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: myapp
+# spec:
+#   selector:
+#     app: mynginx
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#     nodePort: 30080
+#   type: NodePort
+
+  
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp
+  name: myapp-lb
 spec:
-  type: "LoadBalancer"
   selector:
-    app: myapp
+    app: mynginx
   ports:
   - port: 80
-    targetPort: 8080
-
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: myingress
-  labels:
-    name: myingress
-spec:
-  rules:
-  - host: <Host>
-    http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: <Service>
-            port: 
-              number: <Port>
+    protocol: TCP
+    targetPort: 80
+  type: LoadBalancer
 

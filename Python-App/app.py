@@ -1,0 +1,1 @@
+# python app based on Flask API with /health, /info, /ready

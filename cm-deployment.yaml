@@ -24,8 +24,8 @@ spec:
               key: name
         resources:
           limits:
-            memory: "128Mi"
-            cpu: "500m"
+            memory: "64"
+            cpu: "250m"
         ports:
         - containerPort: 80
         volumeMounts:
