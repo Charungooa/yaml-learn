@@ -1,0 +1,10 @@
+# Don't copy these into the Docker image
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+k8s/
+README.md
+.env
+*.md

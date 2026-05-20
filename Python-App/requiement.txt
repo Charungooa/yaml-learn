@@ -1,1 +1,0 @@
-# this is a requirement text file for python app.

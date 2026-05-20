@@ -1,1 +1,43 @@
- # Multi staage Dockerfile for Python Flask API
+# =============================================================================
+# Stage 1: Builder — install dependencies in a temporary image
+# =============================================================================
+FROM python:3.11-slim AS builder
+WORKDIR /build
+
+# Copy only requirements first — Docker caches this layer
+# so dependencies aren't re-installed on every code change
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# =============================================================================
+# Stage 2: Runtime — minimal image with only what we need
+# =============================================================================
+FROM python:3.11-slim AS runtime
+WORKDIR /app
+
+# Create a non-root user for security
+# Running containers as root is a security risk — if the container
+# is compromised, the attacker has root access to the container filesystem
+
+RUN groupadd -r appuser && useradd -r -g appuser -d /app -s /sbin/nologin appuser
+
+# Copy installed dependencies from builder stage
+# This is why it's called "multi-stage" — we only carry the final
+# artifacts, not the build tools, pip cache, etc.
+
+COPY --from=builder /install /usr/local
+
+#Copy application code
+COPY app.py .
+
+# Switch to non-root user
+USER appuser
+
+# Expose the port Flask will listen on
+EXPOSE 5000
+
+# Health check at Docker level (separate from K8s probes)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD  python -c "import requests; requests.get('http://localhost:5000/health')" || exit 1
+
+# Run the application
+CMD ["python" , "app.py"]
