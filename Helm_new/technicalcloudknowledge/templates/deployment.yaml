@@ -30,9 +30,14 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+    
+        
         # livenessProbe is configured to check if the application
         # service is running or is hung; otherwise this will
         # restart the container and cause downtime.
         # The livenessProbe checks the /health endpoint every 15s,
         # with an initial delay of 10s and a 3s timeout. 3 failures -> restart.
         
+        envFrom:
+          - configMapRef:
+                name: {{.Values.conFiGMap.name}}

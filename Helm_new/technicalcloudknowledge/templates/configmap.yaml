@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{.Values.conFiGMap.name}}
+    labels: 
+        apps: {{.Values.name}}
+data:
+  myconfig: {{.Values.conFiGMap.data.myconfig}}
+  group: new-group
+

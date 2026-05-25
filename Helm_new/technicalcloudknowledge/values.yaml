@@ -9,6 +9,15 @@ name: project-icici
 annotations:
     kubernetes.io/change-cause: "project-icici:ngnix-1.29.1"
 
+# This is configmap value and this value  will be referenced from the values.yaml file
+
+conFiGMap:
+    name: xyz
+    data:
+      myconfig: chart
+      group: new-group
+
+
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: nginx
@@ -164,3 +173,4 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
