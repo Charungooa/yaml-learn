@@ -1,0 +1,5 @@
+# I wish to wrote the githubactions workflow
+name: Deploy to AKS
+
+on:
+ workflow_despatch
