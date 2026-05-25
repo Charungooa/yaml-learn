@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.name}}
+  annotations:
+      kubernetes.io/change-cause: {{ index .Values.annotations "kubernetes.io/change-cause" | quote}}
+spec:
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  replicas: {{.Values.replicaCount}}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+      - name: {{.Values.name}}
+        image: {{.Values.image.repository}}:{{.Values.image.tag}}
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: {{.Values.requests.memory}}
+            cpu: {{.Values.requests.cpu}}
+          limits:
+            memory: {{.Values.limits.memory}}
+            cpu: {{.Values.limits.cpu}}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        # livenessProbe is configured to check if the application
+        # service is running or is hung; otherwise this will
+        # restart the container and cause downtime.
+        # The livenessProbe checks the /health endpoint every 15s,
+        # with an initial delay of 10s and a 3s timeout. 3 failures -> restart.
+        
